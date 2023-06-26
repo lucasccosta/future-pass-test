@@ -1,0 +1,11 @@
+version: '3'
+services:
+  fpass-db:
+    image: 'postgres:latest'
+    hostname: "localhost"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: fpass-db
+    ports:
+      - "5432:5432"
