@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthJWTStrategyController } from './auth.controller';
+import { AuthJWTStrategyController } from './auth.jwt.strategy.controller';
 
 describe('AuthJWTStrategyController', () => {
   let controller: AuthJWTStrategyController;
