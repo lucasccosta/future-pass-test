@@ -1,9 +1,0 @@
-// import path from "path";
-const path = require("path");
-
-module.exports = {
-  config: path.resolve(".", "sequelize.js"),
-  "models-path": path.resolve("src", "config","db", "sequelize", "models"),
-  "seeders-path": path.resolve("src", "db", "sequelize", "seeders"),
-  "migrations-path": path.resolve("src", "config","db", "sequelize", "migrations"),
-}
