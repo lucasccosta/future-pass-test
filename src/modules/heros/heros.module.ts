@@ -8,9 +8,10 @@ import { UsersModule } from '../users/users.module';
 import { AddOrRemoveFavoriteHeroUseCase } from './marvel/favorite/add.or.remove.favorite.hero.use.case';
 import { HerosService } from './services/heros.services';
 import { PrismaService } from 'src/config/db/prisma.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [HttpModule, UsersModule],
+  imports: [HttpModule, UsersModule, CacheModule.register()],
   controllers: [SearchMarvelHerosController, AddOrRemoveFavoriteHeroController],
   providers: [
     MarvelProvider,
