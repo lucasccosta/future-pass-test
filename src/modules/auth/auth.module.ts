@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthJWTStrategyController } from './jwt/auth.jwt.strategy.controller';
-import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { AuthJWTStrategyUseCase } from './jwt/auth.jwt.strategy.use.case';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,7 +18,6 @@ import { AuthMiddleware } from 'src/infra/middlewares/auth/auth.middleware';
   ],
   controllers: [AuthJWTStrategyController],
   providers: [
-    AuthService,
     AuthJWTStrategyUseCase,
     {
       provide: APP_GUARD,

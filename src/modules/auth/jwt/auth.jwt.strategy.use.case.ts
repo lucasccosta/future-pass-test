@@ -13,6 +13,7 @@ export class AuthJWTStrategyUseCase {
 
   async execute(data: JWTStrategyDto): Promise<any> {
     const user = await this.usersService.findByEmail(data.email);
+    if (!user) throw new UnauthorizedException('User not found');
 
     const isValidPassword = await bcrypt.compare(data.password, user.password);
 

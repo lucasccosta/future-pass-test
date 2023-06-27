@@ -1,10 +1,12 @@
 import { UnprocessableEntityException } from '@nestjs/common';
+import { heros } from '@prisma/client';
 
 export type UserDomainDTO = {
   id?: string;
   username: string;
   email: string;
   password: string;
+  heros?: heros[];
 };
 
 class UserDomain {
@@ -12,12 +14,14 @@ class UserDomain {
   private _username: string;
   private _email: string;
   private _password: string;
+  private _heros: heros[];
 
-  constructor({ id, username, email, password }: UserDomainDTO) {
+  constructor({ id, username, email, password, heros }: UserDomainDTO) {
     this._id = id;
     this._username = username;
     this._email = email;
     this._password = password;
+    this._heros = heros;
     this.validate();
   }
 
@@ -34,6 +38,15 @@ class UserDomain {
   }
   get password(): string {
     return this._password;
+  }
+
+  get heros(): heros[] {
+    return this._heros;
+  }
+
+  getHero(id: number) {
+    console.log('heros: ', this.heros);
+    return this.heros.find((hero) => hero.external_id === id);
   }
 
   validate() {
