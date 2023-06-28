@@ -53,12 +53,13 @@ export class MarvelProvider {
 
         herosApiObjectData.herosList.push(...result.herosList);
         herosApiObjectData.offset = result.data.offset + 100;
-        await this.cacheManager.set('cached_heros', herosApiObjectData, 0);
 
         heroFound = this.findHero(result.data.results, name);
-
-        if (heroFound) return heroFound;
+        if (heroFound || result.data.offset >= apiResponse.data.total) break;
       }
+      await this.cacheManager.set('cached_heros', herosApiObjectData, 0);
+      if (heroFound) return heroFound;
+      return 'Hero not found';
     } catch (error) {
       console.log(error);
       throw new BadRequestException(error);
