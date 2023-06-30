@@ -1,16 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from 'src/modules/users/services/users.service';
 import { AddOrRemoveFavoriteHeroDto } from '../dto/heros.dtos';
-import { HerosService } from '../../services/heros.services';
+import { HeroesService } from '../../services/heroes.services';
+import { user_heros } from '@prisma/client';
 
 @Injectable()
 export class AddOrRemoveFavoriteHeroUseCase {
   constructor(
     private usersService: UsersService,
-    private herosService: HerosService,
+    private heroesService: HeroesService,
   ) {}
 
-  async execute(data: AddOrRemoveFavoriteHeroDto): Promise<any> {
+  async execute(
+    data: AddOrRemoveFavoriteHeroDto,
+  ): Promise<user_heros | string> {
+    if (!data.heroId) throw new NotFoundException(`Missing hero id param`);
     try {
       const user = await this.usersService.findById(data.userId);
       if (!user)
@@ -19,35 +23,35 @@ export class AddOrRemoveFavoriteHeroUseCase {
         );
 
       const userHero = user.getHero(data.heroId);
-      console.log('user: ', userHero);
       if (userHero) {
-        return await this.herosService.removeFromFavorites({
+        return await this.heroesService.removeFromFavorites({
           heroId: userHero.external_id,
         });
       }
 
-      const heroExists = await this.herosService.findHeroByExternalId({
+      const heroExists = await this.heroesService.findHeroByExternalId({
         externalId: data.heroId,
       });
 
       if (!heroExists) {
-        const heroCreated = await this.herosService.createHero({
+        const heroCreated = await this.heroesService.createHero({
           external_id: data.heroId,
           name: data.name,
           description: data.description,
         });
-        return await this.herosService.addToFavorites({
+        return await this.heroesService.addToFavorites({
           userId: user.id,
           heroId: heroCreated.external_id,
         });
       }
 
-      return await this.herosService.addToFavorites({
+      return await this.heroesService.addToFavorites({
         userId: user.id,
         heroId: heroExists.external_id,
       });
     } catch (error) {
       console.log(error);
+      throw new NotFoundException(error);
     }
   }
 }

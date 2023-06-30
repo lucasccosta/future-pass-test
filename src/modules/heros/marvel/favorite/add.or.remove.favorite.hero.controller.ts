@@ -17,7 +17,7 @@ export class AddOrRemoveFavoriteHeroController {
 
   @Public()
   @Post('hero/favorite')
-  signIn(@Body() data: AddOrRemoveFavoriteHeroDto) {
+  handle(@Body() data: AddOrRemoveFavoriteHeroDto) {
     try {
       const favoriteHero = this.addOrRemoveFavoriteHeroUseCase.execute(data);
       return favoriteHero;
