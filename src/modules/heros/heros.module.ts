@@ -6,7 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 import { AddOrRemoveFavoriteHeroController } from './marvel/favorite/add.or.remove.favorite.hero.controller';
 import { UsersModule } from '../users/users.module';
 import { AddOrRemoveFavoriteHeroUseCase } from './marvel/favorite/add.or.remove.favorite.hero.use.case';
-import { HerosService } from './services/heros.services';
+import { HeroesService } from './services/heroes.services';
 import { PrismaService } from 'src/config/db/prisma.service';
 import { CacheModule } from '@nestjs/cache-manager';
 
@@ -17,7 +17,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     MarvelProvider,
     SearchMarvelHerosUseCase,
     AddOrRemoveFavoriteHeroUseCase,
-    HerosService,
+    HeroesService,
     PrismaService,
   ],
 })
