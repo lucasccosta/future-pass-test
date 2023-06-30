@@ -19,6 +19,7 @@ describe('UsersService', () => {
   });
 
   afterEach(async () => {
+    await prismaService.user_heros.deleteMany({});
     await prismaService.users.deleteMany({});
   });
 
