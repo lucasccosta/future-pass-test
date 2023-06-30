@@ -20,6 +20,7 @@ describe('HeroesService', () => {
     // Clean up test data after each test
     await prismaService.user_heros.deleteMany({});
     await prismaService.heros.deleteMany({});
+    await prismaService.users.deleteMany({});
   });
 
   describe('addToFavorites', () => {

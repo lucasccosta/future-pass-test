@@ -21,6 +21,13 @@ describe('SearchMarvelHerosUseCase', () => {
     controller = new AddOrRemoveFavoriteHeroController(useCase);
   });
 
+  afterEach(async () => {
+    // Clean up test data after each test
+    await prismaService.user_heros.deleteMany({});
+    await prismaService.heros.deleteMany({});
+    await prismaService.users.deleteMany({});
+  });
+
   describe('execute', () => {
     it('should remove the hero to favorites if the user has already favorited it before', async () => {
       const user = await prismaService.users.create({
