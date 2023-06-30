@@ -4,7 +4,7 @@ import { PrismaService } from 'src/config/db/prisma.service';
 import { faker } from '@faker-js/faker';
 import { NotFoundException } from '@nestjs/common';
 
-describe('SearchMarvelHerosUseCase', () => {
+describe('GetUsersByIdUseCase', () => {
   let usersService: UsersService;
   let useCase: GetUsersByIdUseCase;
   let prismaService: PrismaService;
