@@ -3,7 +3,7 @@ import { heros, user_heros } from '@prisma/client';
 import { PrismaService } from 'src/config/db/prisma.service';
 
 @Injectable()
-export class HerosService {
+export class HeroesService {
   constructor(private prisma: PrismaService) {}
   herosModel = this.prisma.heros;
   userHerosModel = this.prisma.user_heros;
@@ -29,8 +29,7 @@ export class HerosService {
     });
   }
 
-  // async findHeroByExternalId({ externalId }): Promise<heros> {
-  async findHeroByExternalId({ externalId }): Promise<any> {
+  async findHeroByExternalId({ externalId }): Promise<heros> {
     return await this.herosModel.findFirst({
       where: {
         external_id: externalId,

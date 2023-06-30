@@ -2,13 +2,14 @@ import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UserDomain } from '../domain/user';
 import { PrismaService } from 'src/config/db/prisma.service';
+import { users } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
   usersModel = this.prisma.users;
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<users> {
     try {
       const user = await this.usersModel.create({
         data: {
@@ -19,7 +20,7 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      throw new ConflictException();
+      throw new ConflictException('User Already exists');
     }
   }
 
@@ -38,6 +39,7 @@ export class UsersService {
         },
       },
     });
+
     if (user)
       return new UserDomain({
         id: user.id,
