@@ -6,7 +6,7 @@ import {
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../dto/user.dto';
 import { CreateUsersUseCase } from './create.users.use.case';
 import { Public } from 'src/infra/middlewares/auth/define.public.routes';
 

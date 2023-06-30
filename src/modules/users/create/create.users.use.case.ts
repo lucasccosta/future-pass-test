@@ -1,6 +1,6 @@
 import { UserDomain } from '../domain/user';
 import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto } from '../dto/user.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { users } from '@prisma/client';
 
