@@ -68,7 +68,7 @@ describe('UserDomain', () => {
         password: 'password',
         heros: [
           {
-            id: faker.datatype.uuid(),
+            id: faker.string.uuid(),
             external_id: 1,
             name: 'Hero 1',
             description: '',
@@ -76,7 +76,7 @@ describe('UserDomain', () => {
             updatedAt: new Date(),
           },
           {
-            id: faker.datatype.uuid(),
+            id: faker.string.uuid(),
             external_id: 2,
             name: 'Hero 2',
             description: '',
@@ -84,7 +84,7 @@ describe('UserDomain', () => {
             updatedAt: new Date(),
           },
           {
-            id: faker.datatype.uuid(),
+            id: faker.string.uuid(),
             external_id: 3,
             name: 'Hero 3',
             description: '',
