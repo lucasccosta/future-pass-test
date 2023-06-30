@@ -2,13 +2,13 @@ import { UserDomain } from '../domain/user';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ConflictException, Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import { users } from '@prisma/client';
 
 @Injectable()
 export class CreateUsersUseCase {
   constructor(private usersService: UsersService) {}
 
-  async execute(userParams: CreateUserDto) {
+  async execute(userParams: CreateUserDto): Promise<users> {
     const userAlreadyExists = await this.usersService.findByEmail(
       userParams.email,
     );
@@ -19,8 +19,12 @@ export class CreateUsersUseCase {
     const user = new UserDomain({
       username: userParams.username,
       email: userParams.email,
-      password: bcrypt.hashSync(userParams.password, 8),
+      password: userParams.password,
     });
-    return await this.usersService.create(user);
+
+    user.encryptPassword();
+
+    const userCreated = await this.usersService.create(user);
+    return userCreated;
   }
 }

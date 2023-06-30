@@ -16,9 +16,9 @@ export class CreateUsersController {
 
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
-      const userCreated = this.createUsersUseCase.execute(createUserDto);
+      const userCreated = await this.createUsersUseCase.execute(createUserDto);
       return userCreated;
     } catch (error) {
       if (error instanceof ConflictException) {
