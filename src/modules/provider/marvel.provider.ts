@@ -1,26 +1,15 @@
-import { HttpService } from '@nestjs/axios';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance } from 'axios';
 import { Cache } from 'cache-manager';
 import 'dotenv/config';
-
-type HerosResponse = {
-  offset: number;
-  total: number;
-  herosList: {
-    id: number;
-    name: string;
-    description: string;
-  }[];
-};
+import { HeroesResponse, heroesDto } from '../heros/marvel/dto/heros.dtos';
 
 @Injectable()
 export class MarvelProvider {
   private marvelUrl: AxiosInstance;
 
   constructor(
-    private httpService: HttpService,
     @Inject(CACHE_MANAGER)
     private cacheManager: Cache,
   ) {
@@ -29,35 +18,39 @@ export class MarvelProvider {
     });
   }
 
-  async getHeros(name: string) {
-    const heroFoundOnCache = await this.searchCachedHeros(name);
-    if (heroFoundOnCache) return heroFoundOnCache;
+  async getHeroes(name: string): Promise<heroesDto | string> {
+    const cachedHero: heroesDto = await this.searchCachedHeroes(name);
+    if (cachedHero) return cachedHero;
 
     try {
-      const apiResponse = await this.getHerosByApi(0);
+      const apiResponse = await this.getHeroesByApi(0);
 
-      let heroFound = this.findHero(apiResponse.data.results, name);
+      const { results, offset, total } = apiResponse.data;
 
-      const herosApiObjectData = {
-        total: apiResponse.data.total,
-        offset: apiResponse.data.offset,
-        herosList: [...apiResponse.herosList],
+      const heroesApiObjectData = {
+        total: total,
+        offset: offset,
+        heroes: [...apiResponse.heroes],
       };
 
-      if (heroFound || apiResponse.data.offset == 100) {
-        await this.cacheManager.set('cached_heros', herosApiObjectData, 0);
+      let heroFound = this.findHero(results, name);
+      if (heroFound || offset == 100) {
+        await this.cacheManager.set('cached_heroes', heroesApiObjectData, 0);
         return heroFound;
       }
-      while (!heroFound || apiResponse.data.total >= apiResponse.data.offset) {
-        const result = await this.getHerosByApi(herosApiObjectData.offset);
+      // while (!heroFound || total >= offset) {
+      while (!heroFound) {
+        const result = await this.getHeroesByApi(heroesApiObjectData.offset);
 
-        herosApiObjectData.herosList.push(...result.herosList);
-        herosApiObjectData.offset = result.data.offset + 100;
+        heroesApiObjectData.heroes.push(...result.heroes);
+        heroesApiObjectData.offset += result.data.count;
 
         heroFound = this.findHero(result.data.results, name);
-        if (heroFound || result.data.offset >= apiResponse.data.total) break;
+        if (heroFound || result.data.offset >= total) break;
       }
-      await this.cacheManager.set('cached_heros', herosApiObjectData, 0);
+
+      await this.cacheManager.set('cached_heroes', heroesApiObjectData, 0);
+
       if (heroFound) return heroFound;
       return 'Hero not found';
     } catch (error) {
@@ -66,26 +59,27 @@ export class MarvelProvider {
     }
   }
 
-  private async getHerosByApi(offset) {
+  private async getHeroesByApi(offset: number) {
+    const { MARVEL_TIMESTAMP, MARVEL_PUBLIC_KEY, MARVEL_HASH } = process.env;
     const result = await this.marvelUrl.get(
-      `/characters?ts=${process.env.MARVEL_TIMESTAMP}&apikey=${process.env.MARVEL_PUBLIC_KEY}&hash=${process.env.MARVEL_HASH}&offset=${offset}`,
+      `/characters?ts=${MARVEL_TIMESTAMP}&apikey=${MARVEL_PUBLIC_KEY}&hash=${MARVEL_HASH}&offset=${offset}`,
     );
     const { data } = result.data;
 
-    const herosList = this.formatHerosResults(data.results);
+    const heroes = this.formatHeroesResults(data.results);
 
     return {
       data,
-      herosList,
+      heroes,
     };
   }
 
-  private async searchCachedHeros(heroName: string) {
-    const herosResponse: HerosResponse = await this.cacheManager.get(
-      'cached_heros',
+  private async searchCachedHeroes(heroName: string) {
+    const heroesResponse: HeroesResponse = await this.cacheManager.get(
+      'cached_heroes',
     );
-    if (!herosResponse) return;
-    const hero = herosResponse.herosList.find((hero) => {
+    if (!heroesResponse) return;
+    const hero = heroesResponse.heroes.find((hero) => {
       return this.formatName(hero.name).includes(this.formatName(heroName));
     });
     return hero;
@@ -95,8 +89,8 @@ export class MarvelProvider {
     return name.replace(/\s/g, '').toLowerCase();
   }
 
-  private formatHerosResults(heros) {
-    return heros.map((hero) => {
+  private formatHeroesResults(heroes) {
+    return heroes.map((hero) => {
       return {
         id: hero.id,
         name: hero.name,
@@ -105,8 +99,8 @@ export class MarvelProvider {
     });
   }
 
-  private findHero(heros, name) {
-    return heros.find((hero) =>
+  private findHero(heroes, name) {
+    return heroes.find((hero) =>
       this.formatName(hero.name).includes(this.formatName(name)),
     );
   }
