@@ -6,6 +6,6 @@ export class SearchMarvelHerosUseCase {
   constructor(private marvelProvider: MarvelProvider) {}
 
   async execute(name: string) {
-    return await this.marvelProvider.getHeros(name);
+    return await this.marvelProvider.getHeroes(name);
   }
 }
