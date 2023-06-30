@@ -1,5 +1,6 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 import { heros } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
 
 export type UserDomainDTO = {
   id?: string;
@@ -44,9 +45,12 @@ class UserDomain {
     return this._heros;
   }
 
-  getHero(id: number) {
-    console.log('heros: ', this.heros);
-    return this.heros.find((hero) => hero.external_id === id);
+  getHero(external_id: number) {
+    return this.heros.find((hero) => hero.external_id === external_id);
+  }
+
+  encryptPassword() {
+    this._password = bcrypt.hashSync(this.password, 8);
   }
 
   validate() {
