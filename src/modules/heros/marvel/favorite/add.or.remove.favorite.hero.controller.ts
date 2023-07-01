@@ -5,7 +5,6 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Public } from 'src/infra/middlewares/auth/define.public.routes';
 import { AddOrRemoveFavoriteHeroUseCase } from './add.or.remove.favorite.hero.use.case';
 import { AddOrRemoveFavoriteHeroDto } from '../dto/heros.dtos';
 
@@ -15,7 +14,6 @@ export class AddOrRemoveFavoriteHeroController {
     private readonly addOrRemoveFavoriteHeroUseCase: AddOrRemoveFavoriteHeroUseCase,
   ) {}
 
-  @Public()
   @Post('hero/favorite')
   handle(@Body() data: AddOrRemoveFavoriteHeroDto) {
     try {
