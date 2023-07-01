@@ -111,5 +111,5 @@ But if you try "doomsday n" you will get the message "Hero not found" because th
 ## Stay in touch
 
 - Author - [Lucas Costa](https://github.com/lucasccosta)
-- LinkedIn - [@nestframework]([https://twitter.com/nestframework](https://www.linkedin.com/in/lucasccosta/))
+- [LinkedIn](https://www.linkedin.com/in/lucasccosta/)
 
