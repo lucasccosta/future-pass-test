@@ -62,7 +62,7 @@ export class MarvelProvider {
   private async getHeroesByApi(offset: number) {
     const { MARVEL_TIMESTAMP, MARVEL_PUBLIC_KEY, MARVEL_HASH } = process.env;
     const result = await this.marvelUrl.get(
-      `/characters?ts=${MARVEL_TIMESTAMP}&apikey=${MARVEL_PUBLIC_KEY}&hash=${MARVEL_HASH}&offset=${offset}`,
+      `/characters?ts=${MARVEL_TIMESTAMP}&apikey=${MARVEL_PUBLIC_KEY}&hash=${MARVEL_HASH}&offset=${offset}&limit=100`,
     );
     const { data } = result.data;
 
