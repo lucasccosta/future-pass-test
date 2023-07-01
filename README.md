@@ -1,35 +1,29 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Future Pass Backend Challenge
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Link to test repo](https://github.com/holding-fpass/challenge-backend-fpass) 
 
 ## Installation
 
 ```bash
 $ npm install
+```
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# test coverage
+$ npm run test:cov
+```
+
+## Running the container
+
+```bash
+$ sudo docker compose up
 ```
 
 ## Running the app
@@ -45,29 +39,77 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+## Routes
+> The API has two types of route, Public and Private ones. To use the private routes you have to authenticate first on the Authenticate Route and pass an Authorization Header on the request, following the pattern:
+```
+{ 'Authorization': 'Bearer token' }
 ```
 
-## Support
+### Public
+- Create Users
+   ```
+  POST http://localhost:3000/create/users
+  body: {username, email, password}
+  ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Authenticate
+  ```
+  POST http://localhost:3000/auth
+  body: {email, password}
+  ```
+
+- Search Heros
+  ```
+  POST http://localhost:3000/search/heros
+  body: {name}
+  ```
+. How it works:
+
+.You can search for heros by using part of the name, but it could not be as effective, or search for an exact name.
+
+.Example:
+
+Search for "doo" will generate the following hero as result:
+
+  ```
+doo ->  hero: { "id": 1011090, "name": "Brother Voodoo" }
+  ```
+
+It's not an effective result, but you can try to search for "doom":
+
+  ```
+doom ->  hero: { "id": 1009281, "name": "Doctor Doom" }
+  ```
+
+If you are thinking on "Victor Doom" you found it, but if you are looking for "Doomsday Man" you need to search more properly:
+
+  ```
+dooms ->  hero: { "id": 1009278, "name": "Doomsday Man" }
+  ```
+
+But if you try "doomsday n" you will get the message "Hero not found" because the app will search for some specific Doomsday N... and it does not exists.
+
+### Private
+
+- Add or remove hero from favorites
+
+  ```
+  POST http://localhost:3000/hero/favorite
+  body: { "userId", "heroId", "name", "description" }
+  ```
+
+> Params: heroId, name and description are related to the Hero
+
+> Notes: If a Hero is not on the database, this route will create it. The usage is simple, if the hero is not one of the user's favorite, the route will set it, and if the hero already is one of the favorites, the route will unmark it as favorite. 
+
+- Get user and his favorite heros
+
+  ```
+  GET http://localhost:3000/user/:id
+  ```
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Lucas Costa](https://github.com/lucasccosta)
+- LinkedIn - [@nestframework]([https://twitter.com/nestframework](https://www.linkedin.com/in/lucasccosta/))
 
-## License
-
-Nest is [MIT licensed](LICENSE).
